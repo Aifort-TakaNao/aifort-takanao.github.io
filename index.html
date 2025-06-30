@@ -1,11 +1,11 @@
-<!-- 省略なし！このままコピペでOK。 -->
 <!DOCTYPE html>
+
 <html lang="ja">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>○○へようこそ！</title>
-  <style>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<title>ゲストページ</title>
+<style>
     body {
       margin: 0;
       padding: 0;
@@ -153,7 +153,7 @@
       font-size: 1.05rem;
       width: 100%;
       box-sizing: border-box;
-      text-align: left; /* ← ここをcenter→left に変更 */
+      text-align: left;
     }
     .gift-button {
       background-color: #e3a57c;
@@ -173,7 +173,6 @@
     .gift-button:hover {
       background-color: #c77b5a;
     }
-  
     .lang-selector {
       position: fixed;
       top: 10px;
@@ -181,71 +180,222 @@
       z-index: 2000;
     }
     .lang-selector select {
-      padding: 6px 10px;
+      padding: 8px 12px;
       font-size: 1rem;
-      border-radius: 8px;
-      border: 1px solid #aaa;
-      background: white;
+      font-weight: 600;
+      border-radius: 12px;
+      border: 1px solid #c97c5d;
+      background-color: #fff;
+      color: #a8644f;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg fill='%23a8644f' height='16' viewBox='0 0 24 24' width='16' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 10px center;
+      background-size: 12px;
+      padding-right: 32px;
+      cursor: pointer;
+      transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+    .lang-selector select:hover {
+      border-color: #c77b5a;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+    }
+    .lang-selector select:focus {
+      outline: none;
+      border-color: #c97c5d;
+      box-shadow: 0 0 0 2px rgba(201, 124, 93, 0.3);
     }
 
-  </style>
+    /* 追加：右下の歯車設定ボックスとモーダル */
+    .settings-box {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      width: 60px;
+      height: 60px;
+      background: rgba(255, 255, 255, 0);
+      border-radius: 16px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      z-index: 2000;
+      box-shadow: 0 2px 10px rgba(0,0,0,0);
+    }
+    .settings-box:hover {
+      background: rgba(255, 255, 255, 0.7);
+    }
+    .settings-box i {
+      font-size: 28px;
+      color: #a8644f;
+    }
+
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.4);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 3000;
+    }
+    .modal {
+      background: #fff;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+      text-align: center;
+    }
+    .modal input {
+      padding: 0.5rem;
+      font-size: 1rem;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      width: 100%;
+      margin-top: 1rem;
+    }
+    .modal button {
+      margin-top: 1rem;
+      background-color: #e3a57c;
+      color: white;
+      border: none;
+      padding: 0.6rem 1.2rem;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    .modal button:hover {
+      background-color: #c77b5a;
+    }
+    .contact-icons {
+      display: flex;
+      gap: 1rem;
+      margin-top: 0.5rem;
+    }
+    .icon-link {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background-color: #a58b7e;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      transition: background 0.3s;
+    }
+    .icon-link:hover {
+      background-color: #93796e;
+    }
+    .icon-link img {
+      width: 24px;
+      height: 24px;
+      filter: brightness(0) invert(1);
+    }
+  
+    .icon-link {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background-color: #a58b7e;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      transition: background 0.3s;
+    }
+    .icon-link:hover {
+      background-color: #93796e;
+    }
+    .icon-link img {
+      width: 24px;
+      height: 24px;
+      filter: brightness(0) invert(1);
+    }
+    @keyframes modalSlideDown {
+      0% { transform: translateY(-30px); opacity: 0; }
+      100% { transform: translateY(0); opacity: 1; }
+    }
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-10px); }
+      40%, 80% { transform: translateX(10px); }
+    }
+    .modal.shake {
+      animation: shake 0.4s ease;
+    }
+    .modal {
+      animation: modalSlideDown 0.4s ease;
+    }
+    </style>
 </head>
 <body>
-  <div class="overlay"></div>
-
-  <div class="lang-selector">
-    <select id="langSelect">
-      <option value="jp">JP</option>
-      <option value="en">EN</option>
-    </select>
-  </div>
-
-
-  <div class="popup" id="popupMsg" role="alert" aria-live="assertive" aria-atomic="true">
-    <span id="popupText">このギフトは現在ご利用いただけません。</span>
-    <button aria-label="閉じる" onclick="closePopup()">✕</button>
-  </div>
-
-  <div class="content">
-    <h1>○○へようこそ！</h1>
-
-    <div class="card">
-      <h2>入室用PINコード</h2>
-      <div class="info" id="pin">---</div>
-      <div class="expiry" id="expiryPin">有効期限: ---</div>
-    </div>
-
-    <div class="card">
-      <h2>Wi-Fi情報</h2>
-      <div class="info">SSID：Guest-WiFi</div>
-      <div class="info">パスワード：welcome2025</div>
-      <div class="info" id="userId">ユーザーID：---</div>
-      <div class="info" id="userPass">ユーザーパスワード：---</div>
-      <div class="login-link">
-        <a href="https://192.168.29.1/guest_port_info.html" target="_blank">ログインできない場合はこちらから</a>
-      </div>
-      <div class="expiry" id="expiryWifi">有効期限: ---</div>
-    </div>
-
-    <div class="card">
-      <h2>メッセージ・ギフト</h2>
-      <div class="gift-container" id="giftContainer">
-        <!-- メッセージとボタンがここに -->
-      </div>
-      <div class="expiry" id="giftExpiry">有効期限: ---</div>
-    </div>
-
-    <div class="footer">ゆったり過ごしていってね ☕</div>
-    <div class="issue-date" id="issueDate">発行日: ---</div>
-    <div class="powered-by">
+<div class="overlay"></div>
+<div class="lang-selector">
+<select id="langSelect">
+<option value="jp">🌸 JP</option>
+<option value="en">🌸 EN</option>
+</select>
+</div>
+<div class="popup" id="popupMsg">
+<span id="popupText">このギフトは現在ご利用いただけません。</span>
+<button onclick="closePopup()">✕</button>
+</div>
+<div class="content">
+<h1>○○へようこそ！</h1>
+<div class="card">
+<h2>入室用PINコード(玄関横キーパッド)</h2>
+<div class="info" id="pin">---</div>
+<div class="expiry" id="expiryPin">有効期限: ---</div>
+</div>
+<div class="card">
+<h2>Wi-Fi情報</h2>
+<div class="info">SSID：Guest-WiFi</div>
+<div class="info">パスワード：welcome2025</div>
+<div class="info" id="userId">ユーザーID：---</div>
+<div class="info" id="userPass">ユーザーパスワード：---</div>
+<div class="login-link">
+<a href="https://192.168.29.1/guest_port_info.html" target="_blank">ログインできない場合はこちらから</a>
+</div>
+<div class="expiry" id="expiryWifi">有効期限: ---</div>
+</div>
+<div class="card">
+<h2>メッセージ・ギフト</h2>
+<div class="gift-container" id="giftContainer"></div>
+<div class="expiry" id="giftExpiry">有効期限: ---</div>
+</div>
+<div class="card">
+<h2>たかなおに連絡する</h2>
+<div class="contact-icons">
+<a class="icon-link" href="https://line.me/ti/p/X9rfM409y2" rel="noopener noreferrer" target="_blank">
+<img alt="LINE" src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/line.svg"/>
+</a>
+<a class="icon-link" href="https://www.instagram.com/naoki_daily.and.travel" rel="noopener noreferrer" target="_blank">
+<img alt="Instagram" src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/instagram.svg"/>
+</a>
+</div>
+</div>
+<div class="footer">のんびり過ごしていってね ☕</div>
+<br>
+<div class="issue-date" id="issueDate">発行日: ---</div>
+<div class="powered-by">
       Powered by 
-      <a href="https://www.switchbot.jp" target="_blank" rel="noopener">
-        <img src="https://support.switch-bot.com/hc/theming_assets/01J2JVK4BF067EZ4222E160STB" alt="SwitchBot" class="switchbot-logo" />
-      </a>
-    </div>
-  </div>
-
-  <script>
+      <a href="https://www.switchbot.jp" rel="noopener" target="_blank">
+<img alt="SwitchBot" class="switchbot-logo" src="https://support.switch-bot.com/hc/theming_assets/01J2JVK4BF067EZ4222E160STB"/>
+</a>
+</div>
+</div>
+<!-- ⚙ 設定ボタン -->
+<div class="settings-box" onclick="openLoginModal()"><a class="icon-link" href="javascript:void(0);"><img alt="設定" src="https://cdn.jsdelivr.net/npm/bootstrap-icons/icons/gear-fill.svg"/></a></div>
+<!-- 🔒 モーダル -->
+<div class="modal-overlay" id="loginModal">
+<div class="modal">
+<h2>管理ログイン</h2>
+<input id="adminPass" placeholder="パスワードを入力" type="password"/>
+<button onclick="checkPassword()">ログイン</button>
+</div>
+</div>
+<script>
     const params = new URLSearchParams(window.location.search);
     const pin = params.get("pin") || "未設定";
     const userId = params.get("id") || "未設定";
@@ -267,51 +417,39 @@
     document.getElementById("giftExpiry").textContent = "有効期限: " + giftExpiry;
 
     const giftContainer = document.getElementById("giftContainer");
-
-    // メッセージ表示
     const msgDiv = document.createElement("div");
     msgDiv.className = "gift-text";
     msgDiv.textContent = giftText;
     giftContainer.appendChild(msgDiv);
 
-    // Redeemボタン作成
     const btn = document.createElement("button");
     btn.className = "gift-button";
     btn.textContent = "🎁 Redeem";
-
     if (gift === "1") {
-      btn.onclick = () => {
-        window.open(giftLink, "_blank");
-      };
+      btn.onclick = () => window.open(giftLink, "_blank");
     } else {
-      btn.onclick = () => {
-        showPopup(sorryMsg);
-      };
+      btn.onclick = () => showPopup(sorryMsg);
     }
     giftContainer.appendChild(btn);
 
-    // ポップアップ表示関数
     function showPopup(message) {
       const popup = document.getElementById("popupMsg");
-      const popupText = document.getElementById("popupText");
-      popupText.textContent = message;
+      document.getElementById("popupText").textContent = message;
       popup.classList.add("show");
     }
-
-    // ポップアップ閉じる関数
     function closePopup() {
-      const popup = document.getElementById("popupMsg");
-      popup.classList.remove("show");
+      document.getElementById("popupMsg").classList.remove("show");
     }
-  
+
     const translations = {
       en: {
-        welcome: "Welcome to ○○!",
+        welcome: "Welcome to Naoki's Home!",
         pin_title: "PIN Code for Entry",
         wifi_title: "Wi-Fi Information",
-        user_id: "User ID：",
-        user_pw: "User Password：",
-        wifi_login: "Click here if you cannot log in",
+        takanao_title: "Contact Naoki",
+        user_id: "Log-in ID：",
+        user_pw: "Log-in PW：",
+        wifi_login: "Click here if you cannot log-in",
         gift_title: "Message & Gift",
         issued: "Issued:",
         expires: "Expiration:",
@@ -320,16 +458,17 @@
         sorry_default: "This gift is currently unavailable."
       },
       jp: {
-        welcome: "○○へようこそ！",
-        pin_title: "入室用PINコード",
+        welcome: "たかなおんちにようこそ～！",
+        pin_title: "入室用PINコード(玄関横キーパッド)",
         wifi_title: "Wi-Fi情報",
-        user_id: "ユーザーID：",
-        user_pw: "ユーザーパスワード：",
+        takanao_title: "たかなおに連絡する",
+        user_id: "ログインID：",
+        user_pw: "ログインPW：",
         wifi_login: "ログインできない場合はこちらから",
         gift_title: "メッセージ・ギフト",
         issued: "発行日:",
         expires: "有効期限:",
-        enjoy: "ゆったり過ごしていってね ☕",
+        enjoy: "のんびり過ごしていってね ☕",
         redeem: "🎁 Redeem",
         sorry_default: "このギフトは現在ご利用いただけません。"
       }
@@ -340,17 +479,16 @@
       document.querySelectorAll("h2")[0].textContent = translations[lang].pin_title;
       document.querySelectorAll("h2")[1].textContent = translations[lang].wifi_title;
       document.querySelectorAll("h2")[2].textContent = translations[lang].gift_title;
+      document.querySelectorAll("h2")[3].textContent = translations[lang].takanao_title;
 
-      document.getElementById("userId").textContent = translations[lang].user_id + (params.get("id") || "未設定");
-      document.getElementById("userPass").textContent = translations[lang].user_pw + (params.get("pw") || "未設定");
+      document.getElementById("userId").textContent = translations[lang].user_id + userId;
+      document.getElementById("userPass").textContent = translations[lang].user_pw + userPass;
 
-      document.getElementById("expiryPin").textContent = translations[lang].expires + " " + (params.get("exp") || "---");
-      document.getElementById("expiryWifi").textContent = translations[lang].expires + " " + (params.get("exp") || "---");
-      document.getElementById("giftExpiry").textContent = translations[lang].expires + " " + (params.get("gexp") || "---");
-
-      document.getElementById("issueDate").textContent = translations[lang].issued + " " + (params.get("iss") || "---");
+      document.getElementById("expiryPin").textContent = translations[lang].expires + " " + expiry;
+      document.getElementById("expiryWifi").textContent = translations[lang].expires + " " + expiry;
+      document.getElementById("giftExpiry").textContent = translations[lang].expires + " " + giftExpiry;
+      document.getElementById("issueDate").textContent = translations[lang].issued + " " + issue;
       document.querySelector(".footer").textContent = translations[lang].enjoy;
-
       document.querySelector(".gift-button").textContent = translations[lang].redeem;
 
       const loginLink = document.querySelector(".login-link a");
@@ -358,15 +496,53 @@
     }
 
     const langSelect = document.getElementById("langSelect");
-    const urlParams = new URLSearchParams(window.location.search);
-    const initialLang = urlParams.get("lang") || "jp";
+    const initialLang = params.get("lang") || "jp";
     langSelect.value = initialLang;
     updateLanguage(initialLang);
-
     langSelect.addEventListener("change", (e) => {
       updateLanguage(e.target.value);
     });
 
-  </script>
+    function openLoginModal() {
+      document.getElementById("loginModal").style.display = "flex";
+    }
+
+    function checkPassword() {
+      const input = document.getElementById("adminPass").value;
+      const correct = "0298760526";
+      if (input === correct) {
+        window.location.href = "generate.html";
+      } else {
+        alert("パスワードが違います");
+      }
+    }
+
+    document.getElementById("loginModal").addEventListener("click", function (e) {
+      if (e.target === this) this.style.display = "none";
+    });
+  
+    function openLoginModal() {
+      const modal = document.getElementById("loginModal");
+      modal.style.display = "flex";
+      setTimeout(() => document.getElementById("adminPass").focus(), 100);
+    }
+
+    function checkPassword() {
+      const input = document.getElementById("adminPass").value;
+      const correct = "0298760526";
+      const modalBox = document.querySelector(".modal");
+      if (input === correct) {
+        window.location.href = "generate.html";
+      } else {
+        modalBox.classList.add("shake");
+        setTimeout(() => modalBox.classList.remove("shake"), 400);
+        alert("パスワードが違います");
+      }
+    }
+
+    document.getElementById("adminPass").addEventListener("keypress", function(e) {
+      if (e.key === "Enter") checkPassword();
+    });
+    </script>
 </body>
 </html>
