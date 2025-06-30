@@ -183,9 +183,9 @@
       params.set("sorry", document.getElementById("sorry").value);
       params.set("lang", document.getElementById("lang").value);
 
-      const url = `${ibase}?${params.toString()}`;
+      const url = `${base}?${params.toString()}`;
       fullUrl.value = url;
-      const fullPageUrl = location.origin + "/" + url;
+      const fullPageUrl = url;
       qr.value = fullPageUrl;
 
       // 🔐 TinyURL APIキーを設定して使用
