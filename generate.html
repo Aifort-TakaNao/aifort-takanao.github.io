@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>リンク作成ツール</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: "M PLUS Rounded 1c", sans-serif;
+      background: url('https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=1200&q=80') no-repeat center center fixed;
+      background-size: cover;
+    }
+    .overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(255, 255, 255, 0.75);
+      backdrop-filter: blur(2px);
+      z-index: 0;
+    }
+    .content {
+      position: relative;
+      z-index: 1;
+      max-width: 600px;
+      margin: 3rem auto;
+      padding: 2rem 1rem;
+    }
+    h1 {
+      text-align: center;
+      color: #c97c5d;
+      margin-bottom: 2rem;
+    }
+    .card {
+      background: rgba(255, 255, 255, 0.9);
+      border-radius: 16px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+      padding: 2rem;
+      margin-bottom: 2rem;
+      border: 2px solid #e2c6b3;
+    }
+    label {
+      font-weight: bold;
+      margin: 0.6rem 0 0.2rem;
+      display: block;
+    }
+    input, textarea, select {
+      width: 100%;
+      padding: 0.5rem;
+      margin-bottom: 1rem;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 1rem;
+      box-sizing: border-box;
+    }
+    .output-section {
+      margin-top: 2rem;
+      text-align: center;
+    }
+    .output-section input {
+      width: 90%;
+      margin: 0.5rem 0;
+    }
+    .copy-button, .save-button {
+      background-color: #e3a57c;
+      color: white;
+      padding: 0.5rem 1rem;
+      border: none;
+      border-radius: 8px;
+      font-weight: bold;
+      margin: 0.3rem;
+      cursor: pointer;
+    }
+    .copy-button:hover, .save-button:hover {
+      background-color: #c77b5a;
+    }
+    canvas {
+      margin-top: 1rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="overlay"></div>
+  <div class="content">
+    <h1>リンク作成ツール</h1>
+    <div class="card">
+      <label>PINコード</label>
+      <input type="text" id="pin">
+
+      <label>Wi-Fi ID</label>
+      <input type="text" id="id">
+
+      <label>Wi-Fiパスワード</label>
+      <input type="text" id="pw">
+
+      <label>有効期限</label>
+      <input type="date" id="exp">
+
+      <label>発行日</label>
+      <input type="date" id="iss" readonly>
+
+      <label>メッセージ</label>
+      <textarea id="text" rows="2">ご確認ありがとうございます！</textarea>
+
+      <label>ギフト</label>
+      <select id="gift">
+        <option value="1">あり</option>
+        <option value="0">なし</option>
+      </select>
+
+      <div id="giftLinkGroup">
+        <label>ギフトリンク</label>
+        <input type="text" id="link" />
+
+        <label>ギフトの有効期限</label>
+        <input type="date" id="gexp" />
+      </div>
+
+      <div id="sorryGroup">
+        <label>ギフト利用不可時のメッセージ</label>
+        <input type="text" id="sorry" value="このギフトは現在ご利用いただけません。" />
+      </div>
+
+      <label>表示言語</label>
+      <select id="lang">
+        <option value="jp">日本語</option>
+        <option value="en">English</option>
+      </select>
+    </div>
+
+    <div class="output-section">
+      <h2>生成されたリンク</h2>
+      <input type="text" id="fullUrl" readonly />
+      <button class="copy-button" onclick="copyToClipboard('fullUrl')">URLをコピー</button>
+
+      <h2>短縮URL（TinyURL）</h2>
+      <input type="text" id="shortUrl" readonly />
+      <button class="copy-button" onclick="copyToClipboard('shortUrl')">短縮URLをコピー</button>
+
+      <h2>QRコード</h2>
+      <canvas id="qrCanvas" width="200" height="200"></canvas><br>
+      <button class="save-button" onclick="saveQR()">QRコード画像を保存</button>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
+  <script>
+    const inputs = document.querySelectorAll("input, textarea, select");
+    const fullUrl = document.getElementById("fullUrl");
+    const shortUrl = document.getElementById("shortUrl");
+    const qr = new QRious({
+      element: document.getElementById("qrCanvas"),
+      size: 200,
+      value: ""
+    });
+
+    function formatDate(input) {
+      if (!input) return "";
+      const date = new Date(input);
+      if (isNaN(date)) return "";
+      const weekdays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+      const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+      return `${weekdays[date.getUTCDay()]}, ${String(date.getUTCDate()).padStart(2, "0")} ${months[date.getUTCMonth()]}. ${date.getUTCFullYear()}`;
+    }
+
+    function updateLink() {
+      const base = "welcome.html";
+      const params = new URLSearchParams();
+      params.set("pin", document.getElementById("pin").value);
+      params.set("id", document.getElementById("id").value);
+      params.set("pw", document.getElementById("pw").value);
+      params.set("exp", formatDate(document.getElementById("exp").value));
+      params.set("iss", formatDate(document.getElementById("iss").value));
+      params.set("gexp", formatDate(document.getElementById("gexp").value));
+      params.set("gift", document.getElementById("gift").value);
+      params.set("text", document.getElementById("text").value);
+      params.set("link", document.getElementById("link").value);
+      params.set("sorry", document.getElementById("sorry").value);
+      params.set("lang", document.getElementById("lang").value);
+
+      const url = `${base}?${params.toString()}`;
+      fullUrl.value = url;
+      const fullPageUrl = location.origin + "/" + url;
+      qr.value = fullPageUrl;
+
+      // 🔐 TinyURL APIキーを設定して使用
+      fetch("https://api.tinyurl.com/create", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer YOUR_TINYURL_API_KEY"
+        },
+        body: JSON.stringify({
+          url: fullPageUrl,
+          domain: "tinyurl.com"
+        })
+      })
+      .then(res => res.json())
+      .then(data => {
+        shortUrl.value = data.data?.tiny_url || "取得失敗";
+      })
+      .catch(() => {
+        shortUrl.value = "エラー：取得できませんでした";
+      });
+    }
+
+    function copyToClipboard(id) {
+      const el = document.getElementById(id);
+      el.select();
+      document.execCommand("copy");
+      alert("コピーしました！");
+    }
+
+    function saveQR() {
+      const canvas = document.getElementById("qrCanvas");
+      const link = document.createElement("a");
+      link.download = "qr-code.png";
+      link.href = canvas.toDataURL("image/png");
+      link.click();
+    }
+
+    function toggleGiftFields() {
+      const gift = document.getElementById("gift").value;
+      document.getElementById("giftLinkGroup").style.display = gift === "1" ? "block" : "none";
+      document.getElementById("sorryGroup").style.display = gift === "0" ? "block" : "none";
+    }
+
+    window.addEventListener("DOMContentLoaded", () => {
+      const today = new Date();
+      document.getElementById("iss").value = today.toISOString().split("T")[0];
+      toggleGiftFields();
+      updateLink();
+    });
+
+    inputs.forEach(input => {
+      input.addEventListener("input", () => {
+        toggleGiftFields();
+        updateLink();
+      });
+    });
+  </script>
+</body>
+</html>
