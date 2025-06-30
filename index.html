@@ -1,0 +1,372 @@
+<!-- 省略なし！このままコピペでOK。 -->
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>○○へようこそ！</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: "M PLUS Rounded 1c", sans-serif;
+      background: url('https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=1200&q=80') no-repeat center center fixed;
+      background-size: cover;
+    }
+    .overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(255, 255, 255, 0.75);
+      backdrop-filter: blur(2px);
+      z-index: 0;
+    }
+    .content {
+      position: relative;
+      z-index: 1;
+      max-width: 600px;
+      margin: 3rem auto;
+      padding: 2rem 1rem;
+    }
+    h1 {
+      font-size: 2.5rem;
+      color: #c97c5d;
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    .card {
+      background: rgba(255, 255, 255, 0.9);
+      border-radius: 16px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+      padding: 2rem;
+      margin-bottom: 2rem;
+      border: 2px solid #e2c6b3;
+    }
+    .card h2 {
+      margin-top: 0;
+      font-size: 1.4rem;
+      color: #a8644f;
+    }
+    .info {
+      background: #fef6f0;
+      border-left: 5px solid #e3a57c;
+      border-radius: 8px;
+      padding: 1rem;
+      margin: 0.5rem 0;
+      font-weight: 500;
+      color: #4e3d36;
+      font-size: 1.05rem;
+    }
+    .expiry {
+      text-align: right;
+      font-size: 0.85rem;
+      color: #888;
+      margin-top: 1rem;
+    }
+    .login-link {
+      text-align: right;
+      margin-top: 0.5rem;
+    }
+    .login-link a {
+      font-size: 0.95rem;
+      color: #a8644f;
+      text-decoration: none;
+      font-weight: 500;
+    }
+    .footer {
+      text-align: center;
+      font-size: 0.9rem;
+      color: #666;
+      margin-top: 2rem;
+    }
+    .issue-date {
+      text-align: center;
+      font-size: 0.85rem;
+      color: #888;
+      margin-bottom: 1rem;
+    }
+    .powered-by {
+      text-align: center;
+      font-size: 0.8rem;
+      color: #aaa;
+      margin-bottom: 2rem;
+    }
+    .switchbot-logo {
+      height: 28px;
+      margin-left: 4px;
+      object-fit: cover;
+      clip-path: inset(0 10px 0 10px);
+      vertical-align: middle;
+    }
+    .popup {
+      position: fixed;
+      top: 0;
+      left: 50%;
+      transform: translate(-50%, -100%);
+      background: #ffefef;
+      color: #a33;
+      border: 1px solid #a33;
+      padding: 1rem 2rem;
+      border-radius: 8px;
+      z-index: 1000;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+      display: none;
+      animation: dropDown 0.4s forwards ease-out;
+      font-weight: 600;
+      font-size: 1rem;
+    }
+    .popup.show {
+      display: block;
+    }
+    .popup button {
+      background: none;
+      border: none;
+      font-weight: bold;
+      font-size: 1.2rem;
+      color: #a33;
+      margin-left: 1rem;
+      cursor: pointer;
+      vertical-align: middle;
+    }
+    @keyframes dropDown {
+      0% {
+        transform: translate(-50%, -100%);
+        opacity: 0;
+      }
+      100% {
+        transform: translate(-50%, 20px);
+        opacity: 1;
+      }
+    }
+    .gift-container {
+      display: flex;
+      flex-direction: column;
+      gap: 0.8rem;
+      align-items: center;
+    }
+    .gift-text {
+      background: #fef6f0;
+      border-left: 5px solid #e3a57c;
+      border-radius: 8px;
+      padding: 1rem;
+      font-weight: 500;
+      color: #4e3d36;
+      font-size: 1.05rem;
+      width: 100%;
+      box-sizing: border-box;
+      text-align: left; /* ← ここをcenter→left に変更 */
+    }
+    .gift-button {
+      background-color: #e3a57c;
+      color: white;
+      text-decoration: none;
+      padding: 0.6rem 1.2rem;
+      border-radius: 8px;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      font-size: 1.1rem;
+      width: 140px;
+      text-align: center;
+      user-select: none;
+      transition: background-color 0.3s ease;
+    }
+    .gift-button:hover {
+      background-color: #c77b5a;
+    }
+  
+    .lang-selector {
+      position: fixed;
+      top: 10px;
+      right: 10px;
+      z-index: 2000;
+    }
+    .lang-selector select {
+      padding: 6px 10px;
+      font-size: 1rem;
+      border-radius: 8px;
+      border: 1px solid #aaa;
+      background: white;
+    }
+
+  </style>
+</head>
+<body>
+  <div class="overlay"></div>
+
+  <div class="lang-selector">
+    <select id="langSelect">
+      <option value="jp">JP</option>
+      <option value="en">EN</option>
+    </select>
+  </div>
+
+
+  <div class="popup" id="popupMsg" role="alert" aria-live="assertive" aria-atomic="true">
+    <span id="popupText">このギフトは現在ご利用いただけません。</span>
+    <button aria-label="閉じる" onclick="closePopup()">✕</button>
+  </div>
+
+  <div class="content">
+    <h1>○○へようこそ！</h1>
+
+    <div class="card">
+      <h2>入室用PINコード</h2>
+      <div class="info" id="pin">---</div>
+      <div class="expiry" id="expiryPin">有効期限: ---</div>
+    </div>
+
+    <div class="card">
+      <h2>Wi-Fi情報</h2>
+      <div class="info">SSID：Guest-WiFi</div>
+      <div class="info">パスワード：welcome2025</div>
+      <div class="info" id="userId">ユーザーID：---</div>
+      <div class="info" id="userPass">ユーザーパスワード：---</div>
+      <div class="login-link">
+        <a href="https://192.168.29.1/guest_port_info.html" target="_blank">ログインできない場合はこちらから</a>
+      </div>
+      <div class="expiry" id="expiryWifi">有効期限: ---</div>
+    </div>
+
+    <div class="card">
+      <h2>メッセージ・ギフト</h2>
+      <div class="gift-container" id="giftContainer">
+        <!-- メッセージとボタンがここに -->
+      </div>
+      <div class="expiry" id="giftExpiry">有効期限: ---</div>
+    </div>
+
+    <div class="footer">ゆったり過ごしていってね ☕</div>
+    <div class="issue-date" id="issueDate">発行日: ---</div>
+    <div class="powered-by">
+      Powered by 
+      <a href="https://www.switchbot.jp" target="_blank" rel="noopener">
+        <img src="https://support.switch-bot.com/hc/theming_assets/01J2JVK4BF067EZ4222E160STB" alt="SwitchBot" class="switchbot-logo" />
+      </a>
+    </div>
+  </div>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const pin = params.get("pin") || "未設定";
+    const userId = params.get("id") || "未設定";
+    const userPass = params.get("pw") || "未設定";
+    const expiry = params.get("exp") || "---";
+    const issue = params.get("iss") || "---";
+    const gift = params.get("gift") || "0";
+    const giftText = params.get("text") || "ご確認ありがとうございます！";
+    const giftLink = params.get("link") || "#";
+    const giftExpiry = params.get("gexp") || "---";
+    const sorryMsg = params.get("sorry") || "このギフトは現在ご利用いただけません。";
+
+    document.getElementById("pin").textContent = pin;
+    document.getElementById("userId").textContent = "ユーザーID：" + userId;
+    document.getElementById("userPass").textContent = "ユーザーパスワード：" + userPass;
+    document.getElementById("expiryPin").textContent = "有効期限: " + expiry;
+    document.getElementById("expiryWifi").textContent = "有効期限: " + expiry;
+    document.getElementById("issueDate").textContent = "発行日: " + issue;
+    document.getElementById("giftExpiry").textContent = "有効期限: " + giftExpiry;
+
+    const giftContainer = document.getElementById("giftContainer");
+
+    // メッセージ表示
+    const msgDiv = document.createElement("div");
+    msgDiv.className = "gift-text";
+    msgDiv.textContent = giftText;
+    giftContainer.appendChild(msgDiv);
+
+    // Redeemボタン作成
+    const btn = document.createElement("button");
+    btn.className = "gift-button";
+    btn.textContent = "🎁 Redeem";
+
+    if (gift === "1") {
+      btn.onclick = () => {
+        window.open(giftLink, "_blank");
+      };
+    } else {
+      btn.onclick = () => {
+        showPopup(sorryMsg);
+      };
+    }
+    giftContainer.appendChild(btn);
+
+    // ポップアップ表示関数
+    function showPopup(message) {
+      const popup = document.getElementById("popupMsg");
+      const popupText = document.getElementById("popupText");
+      popupText.textContent = message;
+      popup.classList.add("show");
+    }
+
+    // ポップアップ閉じる関数
+    function closePopup() {
+      const popup = document.getElementById("popupMsg");
+      popup.classList.remove("show");
+    }
+  
+    const translations = {
+      en: {
+        welcome: "Welcome to ○○!",
+        pin_title: "PIN Code for Entry",
+        wifi_title: "Wi-Fi Information",
+        user_id: "User ID：",
+        user_pw: "User Password：",
+        wifi_login: "Click here if you cannot log in",
+        gift_title: "Message & Gift",
+        issued: "Issued:",
+        expires: "Expiration:",
+        enjoy: "Enjoy your stay ☕",
+        redeem: "🎁 Redeem",
+        sorry_default: "This gift is currently unavailable."
+      },
+      jp: {
+        welcome: "○○へようこそ！",
+        pin_title: "入室用PINコード",
+        wifi_title: "Wi-Fi情報",
+        user_id: "ユーザーID：",
+        user_pw: "ユーザーパスワード：",
+        wifi_login: "ログインできない場合はこちらから",
+        gift_title: "メッセージ・ギフト",
+        issued: "発行日:",
+        expires: "有効期限:",
+        enjoy: "ゆったり過ごしていってね ☕",
+        redeem: "🎁 Redeem",
+        sorry_default: "このギフトは現在ご利用いただけません。"
+      }
+    };
+
+    function updateLanguage(lang) {
+      document.querySelector("h1").textContent = translations[lang].welcome;
+      document.querySelectorAll("h2")[0].textContent = translations[lang].pin_title;
+      document.querySelectorAll("h2")[1].textContent = translations[lang].wifi_title;
+      document.querySelectorAll("h2")[2].textContent = translations[lang].gift_title;
+
+      document.getElementById("userId").textContent = translations[lang].user_id + (params.get("id") || "未設定");
+      document.getElementById("userPass").textContent = translations[lang].user_pw + (params.get("pw") || "未設定");
+
+      document.getElementById("expiryPin").textContent = translations[lang].expires + " " + (params.get("exp") || "---");
+      document.getElementById("expiryWifi").textContent = translations[lang].expires + " " + (params.get("exp") || "---");
+      document.getElementById("giftExpiry").textContent = translations[lang].expires + " " + (params.get("gexp") || "---");
+
+      document.getElementById("issueDate").textContent = translations[lang].issued + " " + (params.get("iss") || "---");
+      document.querySelector(".footer").textContent = translations[lang].enjoy;
+
+      document.querySelector(".gift-button").textContent = translations[lang].redeem;
+
+      const loginLink = document.querySelector(".login-link a");
+      if (loginLink) loginLink.textContent = translations[lang].wifi_login;
+    }
+
+    const langSelect = document.getElementById("langSelect");
+    const urlParams = new URLSearchParams(window.location.search);
+    const initialLang = urlParams.get("lang") || "jp";
+    langSelect.value = initialLang;
+    updateLanguage(initialLang);
+
+    langSelect.addEventListener("change", (e) => {
+      updateLanguage(e.target.value);
+    });
+
+  </script>
+</body>
+</html>
