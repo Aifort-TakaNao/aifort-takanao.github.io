@@ -168,7 +168,7 @@
     }
 
     function updateLink() {
-      const base = "https://aifort-takanao.github.io";
+      const base = "https://aifort-takanao.github.io/";
       const params = new URLSearchParams();
       params.set("name", document.getElementById("name").value);
       params.set("pin", document.getElementById("pin").value);
@@ -183,7 +183,7 @@
       params.set("sorry", document.getElementById("sorry").value);
       params.set("lang", document.getElementById("lang").value);
 
-      const url = `${base}?${params.toString()}`;
+      const url = `${ibase}?${params.toString()}`;
       fullUrl.value = url;
       const fullPageUrl = location.origin + "/" + url;
       qr.value = fullPageUrl;
