@@ -85,6 +85,9 @@
   <div class="content">
     <h1>リンク作成ツール</h1>
     <div class="card">
+      <label>名前</label>
+      <input type="text" id="name">
+
       <label>PINコード</label>
       <input type="text" id="pin">
 
@@ -167,6 +170,7 @@
     function updateLink() {
       const base = "welcome.html";
       const params = new URLSearchParams();
+      params.set("name", document.getElementById("name").value);
       params.set("pin", document.getElementById("pin").value);
       params.set("id", document.getElementById("id").value);
       params.set("pw", document.getElementById("pw").value);
@@ -189,7 +193,7 @@
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": "Bearer YOUR_TINYURL_API_KEY"
+          "Authorization": "Bearer Bwa0OWM2aQhJnMM9M1fNpKk8eJ00wnA1F03jYFwNhjOCBd1BViRp0NB6o61U"
         },
         body: JSON.stringify({
           url: fullPageUrl,
