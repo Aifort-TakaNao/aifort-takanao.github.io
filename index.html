@@ -46,6 +46,11 @@
       font-size: 1.4rem;
       color: #a8644f;
     }
+    .card h3 {
+      margin-top: 0;
+      font-size: 0.9rem;
+      color: #a8644f;
+    }
     .info {
       background: #fef6f0;
       border-left: 5px solid #e3a57c;
@@ -366,6 +371,16 @@
 <div class="expiry" id="giftExpiry">有効期限: ---</div>
 </div>
 <div class="card">
+    <h2 id="mapTitle">マップ</h2>
+    <h3>東京都東久留米市中央町2丁目9-27 Aifort.東久留米 301号室</h3>
+    <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 12px; box-shadow: 0 0 10px rgba(0,0,0,0.2);">
+      <iframe
+        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2803.569345005278!2d139.51752677506445!3d35.75556292588832!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6018e7474e389889%3A0x4a887e61c0f2e9d7!2zQWlmb3J0KOOCouOCpOODleOCqeODvOODiCnmnbHkuYXnlZnnsbM!5e1!3m2!1sja!2sjp!4v1751290031658!5m2!1sja!2sjp"
+        width="100%" height="100%" style="position:absolute; top:0; left:0; border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade">
+      </iframe>
+    </div>
+  </div>
+<div class="card">
 <h2>たかなおに連絡する</h2>
 <div class="contact-icons">
 <a class="icon-link" href="https://line.me/ti/p/X9rfM409y2" rel="noopener noreferrer" target="_blank">
@@ -452,6 +467,7 @@ if (name) {
         pin_title: "PIN Code for Entry",
         wifi_title: "Wi-Fi Information",
         takanao_title: "Contact Naoki",
+        map_title: "Map",
         user_id: "Log-in ID：",
         user_pw: "Log-in PW：",
         wifi_login: "Click here if you cannot log-in",
@@ -460,6 +476,7 @@ if (name) {
         expires: "Expiration:",
         enjoy: "Enjoy your stay ☕",
         redeem: "🎁 Redeem",
+        addre: "301 Aifort.Higashikurume, 2 Chome-9-27 Chuocho, Higashikurume, Tokyo 203-0054",
         sorry_default: "This gift is currently unavailable."
       },
       jp: {
@@ -467,6 +484,7 @@ if (name) {
         pin_title: "入室用PINコード(玄関横キーパッド)",
         wifi_title: "Wi-Fi",
         takanao_title: "たかなおに連絡する",
+        map_title: "マップ",
         user_id: "ログインID：",
         user_pw: "ログインPW：",
         wifi_login: "ログインできない場合はこちらから",
@@ -475,6 +493,7 @@ if (name) {
         expires: "有効期限:",
         enjoy: "のんびり過ごしていってね ☕",
         redeem: "🎁 Redeem",
+        addre: "〒203-0054 東京都東久留米市中央町2丁目9-27 Aifort.東久留米 301号室",
         sorry_default: "このギフトは現在ご利用いただけません。"
       }
     };
@@ -484,7 +503,9 @@ if (name) {
       document.querySelectorAll("h2")[0].textContent = translations[lang].pin_title;
       document.querySelectorAll("h2")[1].textContent = translations[lang].wifi_title;
       document.querySelectorAll("h2")[2].textContent = translations[lang].gift_title;
-      document.querySelectorAll("h2")[3].textContent = translations[lang].takanao_title;
+      document.querySelectorAll("h2")[3].textContent = translations[lang].map_title;
+      document.querySelectorAll("h2")[4].textContent = translations[lang].takanao_title;
+      document.querySelector("h3").textContent = translations[lang].addre;
 
       document.getElementById("userId").textContent = translations[lang].user_id + userId;
       document.getElementById("userPass").textContent = translations[lang].user_pw + userPass;
