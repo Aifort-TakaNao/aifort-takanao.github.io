@@ -343,6 +343,7 @@
 </div>
 <div class="content">
 <h1>○○へようこそ！</h1>
+<div id="guestName" style="text-align:center; font-size:1.2rem; color:#6b4a3b; margin-bottom:1rem;"></div>
 <div class="card">
 <h2>入室用PINコード(玄関横キーパッド)</h2>
 <div class="info" id="pin">---</div>
@@ -397,6 +398,10 @@
 </div>
 <script>
     const params = new URLSearchParams(window.location.search);
+    const name = params.get("name") || "";
+if (name) {
+  document.getElementById("guestName").textContent = `${name}`;
+}
     const pin = params.get("pin") || "未設定";
     const userId = params.get("id") || "未設定";
     const userPass = params.get("pw") || "未設定";
