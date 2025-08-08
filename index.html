@@ -16,6 +16,24 @@
         console.log('ServiceWorker registration failed: ', err);
     });
     }
+    import React from "react";
+import ReactDOM from "react-dom";
+import { useA2HS } from "react-use-a2hs";
+
+function App() {
+  const [promptEvent, promptToInstall] = useA2HS();
+
+  return (
+    <div className="App">
+      {promptEvent && (
+        <button onClick={promptToInstall}>{"please install PWA"}</button>
+      )}
+    </div>
+  );
+}
+
+const rootElement = document.getElementById("root");
+ReactDOM.render(<App />, rootElement);
 </script>
 <style>
     body {
