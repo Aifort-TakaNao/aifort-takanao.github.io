@@ -8,6 +8,18 @@
 <link rel="manifest" href="manifest.json">
 <link href="useA2HS.tsx">
 <script>
+    const inviteText = document.getElementById("inviteText");
+
+const nameValue = document.getElementById("name").value || "there";
+const urlValue = fullUrl.value || "";
+
+inviteText.value =
+`Hi, ${nameValue} !
+Get your invitation from here!
+*Do not reply to this account.
+${urlValue}`;
+</script>
+<script>
     // service workerの登録関係
     if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('service_worker.js').then(function(registration) {
