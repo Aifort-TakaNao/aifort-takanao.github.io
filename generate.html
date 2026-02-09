@@ -144,6 +144,13 @@
       <h2>QRコード</h2>
       <canvas id="qrCanvas" width="200" height="200"></canvas><br>
       <button class="save-button" onclick="saveQR()">QRコード画像を保存</button>
+
+      <h2>招待メッセージ</h2>
+<textarea id="inviteText" rows="5" readonly></textarea>
+<br>
+<button class="copy-button" onclick="copyToClipboard('inviteText')">
+  招待文をコピー
+</button>
     </div>
   </div>
 
@@ -246,3 +253,4 @@
   </script>
 </body>
 </html>
+
