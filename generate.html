@@ -149,100 +149,97 @@
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
   <script>
-    const inputs = document.querySelectorAll("input, textarea, select");
-    const fullUrl = document.getElementById("fullUrl");
-    const shortUrl = document.getElementById("shortUrl");
-    const qr = new QRious({
-      element: document.getElementById("qrCanvas"),
-      size: 200,
-      value: ""
-    });
+const inputs = document.querySelectorAll("input, textarea, select");
 
-    function formatDate(input) {
-      if (!input) return "";
-      const date = new Date(input);
-      if (isNaN(date)) return "";
-      const weekdays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-      const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-      return `${weekdays[date.getUTCDay()]}, ${String(date.getUTCDate()).padStart(2, "0")} ${months[date.getUTCMonth()]}. ${date.getUTCFullYear()}`;
-    }
+const nameInput = document.getElementById("name");
+const pinInput  = document.getElementById("pin");
+const idInput   = document.getElementById("id");
+const pwInput   = document.getElementById("pw");
+const expInput  = document.getElementById("exp");
+const issInput  = document.getElementById("iss");
+const gexpInput = document.getElementById("gexp");
+const giftInput = document.getElementById("gift");
+const textInput = document.getElementById("text");
+const linkInput = document.getElementById("link");
+const sorryInput = document.getElementById("sorry");
+const langInput = document.getElementById("lang");
 
-    function updateLink() {
-      const base = "https://aifort-takanao.github.io/";
-      const params = new URLSearchParams();
-      params.set("name", document.getElementById("name").value);
-      params.set("pin", document.getElementById("pin").value);
-      params.set("id", document.getElementById("id").value);
-      params.set("pw", document.getElementById("pw").value);
-      params.set("exp", formatDate(document.getElementById("exp").value));
-      params.set("iss", formatDate(document.getElementById("iss").value));
-      params.set("gexp", formatDate(document.getElementById("gexp").value));
-      params.set("gift", document.getElementById("gift").value);
-      params.set("text", document.getElementById("text").value);
-      params.set("link", document.getElementById("link").value);
-      params.set("sorry", document.getElementById("sorry").value);
-      params.set("lang", document.getElementById("lang").value);
+const fullUrl = document.getElementById("fullUrl");
+const inviteText = document.getElementById("inviteText");
 
-      const url = `${base}?${params.toString()}`;
-      fullUrl.value = url;
-      const fullPageUrl = url;
-      qr.value = fullPageUrl;
+const qr = new QRious({
+  element: document.getElementById("qrCanvas"),
+  size: 200,
+  value: ""
+});
 
-      // 🔐 TinyURL APIキーを設定して使用
-      fetch("https://api.tinyurl.com/create", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": "Bearer Bwa0OWM2aQhJnMM9M1fNpKk8eJ00wnA1F03jYFwNhjOCBd1BViRp0NB6o61U"
-        },
-        body: JSON.stringify({
-          url: fullPageUrl,
-          domain: "tinyurl.com"
-        })
-      })
-      .then(res => res.json())
-      .then(data => {
-        shortUrl.value = data.data?.tiny_url || "取得失敗";
-      })
-      .catch(() => {
-        shortUrl.value = "エラー：取得できませんでした";
-      });
-    }
+function formatDate(input) {
+  if (!input) return "";
+  const d = new Date(input);
+  return isNaN(d) ? "" : d.toUTCString().split(" ").slice(0,4).join(" ");
+}
 
-    function copyToClipboard(id) {
-      const el = document.getElementById(id);
-      el.select();
-      document.execCommand("copy");
-      alert("コピーしました！");
-    }
+function updateLink() {
+  const base = "https://aifort-takanao.github.io/";
+  const p = new URLSearchParams();
 
-    function saveQR() {
-      const canvas = document.getElementById("qrCanvas");
-      const link = document.createElement("a");
-      link.download = "qr-code.png";
-      link.href = canvas.toDataURL("image/png");
-      link.click();
-    }
+  p.set("name", nameInput.value);
+  p.set("pin", pinInput.value);
+  p.set("id", idInput.value);
+  p.set("pw", pwInput.value);
+  p.set("exp", formatDate(expInput.value));
+  p.set("iss", formatDate(issInput.value));
+  p.set("gexp", formatDate(gexpInput.value));
+  p.set("gift", giftInput.value);
+  p.set("text", textInput.value);
+  p.set("link", linkInput.value);
+  p.set("sorry", sorryInput.value);
+  p.set("lang", langInput.value);
 
-    function toggleGiftFields() {
-      const gift = document.getElementById("gift").value;
-      document.getElementById("giftLinkGroup").style.display = gift === "1" ? "block" : "none";
-      document.getElementById("sorryGroup").style.display = gift === "0" ? "block" : "none";
-    }
+  const url = `${base}?${p.toString()}`;
+  fullUrl.value = url;
+  qr.value = url;
 
-    window.addEventListener("DOMContentLoaded", () => {
-      const today = new Date();
-      document.getElementById("iss").value = today.toISOString().split("T")[0];
-      toggleGiftFields();
-      updateLink();
-    });
+  const userName = nameInput.value || "there";
+  inviteText.value =
+`Hi, ${userName} !
+Get your invitation from here!
+*Do not reply to this account.
+${url}`;
+}
 
-    inputs.forEach(input => {
-      input.addEventListener("input", () => {
-        toggleGiftFields();
-        updateLink();
-      });
-    });
-  </script>
+function toggleGiftFields() {
+  giftLinkGroup.style.display = giftInput.value === "1" ? "block" : "none";
+  sorryGroup.style.display = giftInput.value === "0" ? "block" : "block";
+}
+
+function copyToClipboard(id) {
+  const el = document.getElementById(id);
+  el.select();
+  document.execCommand("copy");
+  alert("コピーしました！");
+}
+
+function saveQR() {
+  const a = document.createElement("a");
+  a.download = "qr-code.png";
+  a.href = qrCanvas.toDataURL("image/png");
+  a.click();
+}
+
+window.addEventListener("DOMContentLoaded", () => {
+  issInput.value = new Date().toISOString().split("T")[0];
+  toggleGiftFields();
+  updateLink();
+});
+
+inputs.forEach(el => {
+  el.addEventListener("input", () => {
+    toggleGiftFields();
+    updateLink();
+  });
+});
+</script>
 </body>
 </html>
+
