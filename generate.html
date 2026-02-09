@@ -1,245 +1,212 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>リンク作成ツール</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
-  <style>
-    body {
-      margin: 0;
-      padding: 0;
-      font-family: "M PLUS Rounded 1c", sans-serif;
-      background: url('https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=1200&q=80') no-repeat center center fixed;
-      background-size: cover;
-    }
-    .overlay {
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(255, 255, 255, 0.75);
-      backdrop-filter: blur(2px);
-      z-index: 0;
-    }
-    .content {
-      position: relative;
-      z-index: 1;
-      max-width: 600px;
-      margin: 3rem auto;
-      padding: 2rem 1rem;
-    }
-    h1 {
-      text-align: center;
-      color: #c97c5d;
-      margin-bottom: 2rem;
-    }
-    .card {
-      background: rgba(255, 255, 255, 0.9);
-      border-radius: 16px;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.1);
-      padding: 2rem;
-      margin-bottom: 2rem;
-      border: 2px solid #e2c6b3;
-    }
-    label {
-      font-weight: bold;
-      margin: 0.6rem 0 0.2rem;
-      display: block;
-    }
-    input, textarea, select {
-      width: 100%;
-      padding: 0.5rem;
-      margin-bottom: 1rem;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-      font-size: 1rem;
-      box-sizing: border-box;
-    }
-    .output-section {
-      margin-top: 2rem;
-      text-align: center;
-    }
-    .output-section input {
-      width: 90%;
-      margin: 0.5rem 0;
-    }
-    .copy-button, .save-button {
-      background-color: #e3a57c;
-      color: white;
-      padding: 0.5rem 1rem;
-      border: none;
-      border-radius: 8px;
-      font-weight: bold;
-      margin: 0.3rem;
-      cursor: pointer;
-    }
-    .copy-button:hover, .save-button:hover {
-      background-color: #c77b5a;
-    }
-    canvas {
-      margin-top: 1rem;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>リンク作成ツール</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
+
+<style>
+body{
+  margin:0;
+  font-family:"M PLUS Rounded 1c",sans-serif;
+  background:url('https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=1200&q=80') no-repeat center/cover fixed;
+}
+.overlay{
+  position:fixed; inset:0;
+  background:rgba(255,255,255,.75);
+  backdrop-filter:blur(2px);
+}
+.content{
+  position:relative;
+  max-width:600px;
+  margin:3rem auto;
+  padding:2rem 1rem;
+}
+h1,h2{ text-align:center; color:#c97c5d; }
+.card{
+  background:rgba(255,255,255,.9);
+  border-radius:16px;
+  padding:2rem;
+  margin-bottom:2rem;
+  border:2px solid #e2c6b3;
+  box-shadow:0 4px 16px rgba(0,0,0,.1);
+}
+label{ font-weight:bold; display:block; margin-top:.6rem; }
+input,textarea,select{
+  width:100%; padding:.5rem; margin-bottom:1rem;
+  border-radius:8px; border:1px solid #ccc; font-size:1rem;
+}
+.copy-button,.save-button{
+  background:#e3a57c; color:#fff;
+  padding:.5rem 1rem; border:none;
+  border-radius:8px; font-weight:bold;
+  cursor:pointer; margin:.3rem;
+}
+.copy-button:hover,.save-button:hover{ background:#c77b5a; }
+canvas{ margin-top:1rem; }
+.output-section{text-align:center;}
+</style>
 </head>
+
 <body>
-  <div class="overlay"></div>
-  <div class="content">
-    <h1>リンク作成ツール</h1>
-    <div class="card">
-      <label>名前</label>
-      <input type="text" id="name">
+<div class="overlay"></div>
 
-      <label>PINコード</label>
-      <input type="text" id="pin">
+<div class="content">
+<h1>リンク作成ツール</h1>
 
-      <label>Wi-Fi ID</label>
-      <input type="text" id="id">
+<div class="card">
+  <label>名前</label>
+  <input id="name">
 
-      <label>Wi-Fiパスワード</label>
-      <input type="text" id="pw">
+  <label>PINコード</label>
+  <input id="pin">
 
-      <label>有効期限</label>
-      <input type="date" id="exp">
+  <label>Wi-Fi ID</label>
+  <input id="id">
 
-      <label>発行日</label>
-      <input type="date" id="iss" readonly>
+  <label>Wi-Fiパスワード</label>
+  <input id="pw">
 
-      <label>メッセージ</label>
-      <textarea id="text" rows="2">ご確認ありがとうございます！</textarea>
+  <label>有効期限</label>
+  <input id="exp" type="date">
 
-      <label>ギフト</label>
-      <select id="gift">
-        <option value="1">あり</option>
-        <option value="0">なし</option>
-      </select>
+  <label>発行日</label>
+  <input id="iss" type="date" readonly>
 
-      <div id="giftLinkGroup">
-        <label>ギフトリンク</label>
-        <input type="text" id="link" />
+  <label>メッセージ</label>
+  <textarea id="text">ご確認ありがとうございます！</textarea>
 
-        <label>ギフトの有効期限</label>
-        <input type="date" id="gexp" />
-      </div>
+  <label>ギフト</label>
+  <select id="gift">
+    <option value="1">あり</option>
+    <option value="0">なし</option>
+  </select>
 
-      <div id="sorryGroup">
-        <label>ギフト利用不可時のメッセージ</label>
-        <input type="text" id="sorry" value="このギフトは現在ご利用いただけません。" />
-      </div>
-
-      <label>表示言語</label>
-      <select id="lang">
-        <option value="jp">日本語</option>
-        <option value="en">English</option>
-      </select>
-    </div>
-
-    <div class="output-section">
-      <h2>生成されたリンク</h2>
-      <input type="text" id="fullUrl" readonly />
-      <button class="copy-button" onclick="copyToClipboard('fullUrl')">URLをコピー</button>
-
-      <h2>短縮URL（TinyURL）</h2>
-      <input type="text" id="shortUrl" readonly />
-      <button class="copy-button" onclick="copyToClipboard('shortUrl')">短縮URLをコピー</button>
-
-      <h2>QRコード</h2>
-      <canvas id="qrCanvas" width="200" height="200"></canvas><br>
-      <button class="save-button" onclick="saveQR()">QRコード画像を保存</button>
-    </div>
+  <div id="giftLinkGroup">
+    <label>ギフトリンク</label>
+    <input id="link">
+    <label>ギフト有効期限</label>
+    <input id="gexp" type="date">
   </div>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
-  <script>
-const inputs = document.querySelectorAll("input, textarea, select");
+  <div id="sorryGroup">
+    <label>ギフト不可メッセージ</label>
+    <input id="sorry" value="このギフトは現在ご利用いただけません。">
+  </div>
 
-const nameInput = document.getElementById("name");
-const pinInput  = document.getElementById("pin");
-const idInput   = document.getElementById("id");
-const pwInput   = document.getElementById("pw");
-const expInput  = document.getElementById("exp");
-const issInput  = document.getElementById("iss");
-const gexpInput = document.getElementById("gexp");
-const giftInput = document.getElementById("gift");
-const textInput = document.getElementById("text");
-const linkInput = document.getElementById("link");
-const sorryInput = document.getElementById("sorry");
-const langInput = document.getElementById("lang");
+  <label>表示言語</label>
+  <select id="lang">
+    <option value="jp">日本語</option>
+    <option value="en">English</option>
+  </select>
+</div>
 
-const fullUrl = document.getElementById("fullUrl");
-const inviteText = document.getElementById("inviteText");
+<div class="card output-section">
+  <h2>生成されたURL</h2>
+  <input id="fullUrl" readonly>
+  <button class="copy-button" onclick="copyText('fullUrl')">URLをコピー</button>
 
+  <h2>QRコード</h2>
+  <canvas id="qrCanvas" width="200" height="200"></canvas><br>
+  <button class="save-button" onclick="saveQR()">QRを保存</button>
+
+  <h2>招待メッセージ</h2>
+  <textarea id="inviteText" rows="5" readonly></textarea>
+  <button class="copy-button" onclick="copyText('inviteText')">
+    招待文をコピー
+  </button>
+</div>
+</div>
+
+<script>
+/* === 要素取得（絶対に省略しない） === */
+const el = id => document.getElementById(id);
+
+const nameI  = el("name");
+const pinI   = el("pin");
+const idI    = el("id");
+const pwI    = el("pw");
+const expI   = el("exp");
+const issI   = el("iss");
+const textI  = el("text");
+const giftI  = el("gift");
+const linkI  = el("link");
+const gexpI  = el("gexp");
+const sorryI = el("sorry");
+const langI  = el("lang");
+
+const fullUrl = el("fullUrl");
+const inviteText = el("inviteText");
+
+/* === QR === */
 const qr = new QRious({
-  element: document.getElementById("qrCanvas"),
+  element: el("qrCanvas"),
   size: 200,
   value: ""
 });
 
-function formatDate(input) {
-  if (!input) return "";
-  const d = new Date(input);
+/* === util === */
+function formatDate(v){
+  if(!v) return "";
+  const d = new Date(v);
   return isNaN(d) ? "" : d.toUTCString().split(" ").slice(0,4).join(" ");
 }
 
-function updateLink() {
-  const base = "https://aifort-takanao.github.io/";
-  const p = new URLSearchParams();
+/* === メイン処理 === */
+function updateAll(){
+  const params = new URLSearchParams({
+    name: nameI.value,
+    pin: pinI.value,
+    id: idI.value,
+    pw: pwI.value,
+    exp: formatDate(expI.value),
+    iss: formatDate(issI.value),
+    text: textI.value,
+    gift: giftI.value,
+    link: linkI.value,
+    gexp: formatDate(gexpI.value),
+    sorry: sorryI.value,
+    lang: langI.value
+  });
 
-  p.set("name", nameInput.value);
-  p.set("pin", pinInput.value);
-  p.set("id", idInput.value);
-  p.set("pw", pwInput.value);
-  p.set("exp", formatDate(expInput.value));
-  p.set("iss", formatDate(issInput.value));
-  p.set("gexp", formatDate(gexpInput.value));
-  p.set("gift", giftInput.value);
-  p.set("text", textInput.value);
-  p.set("link", linkInput.value);
-  p.set("sorry", sorryInput.value);
-  p.set("lang", langInput.value);
-
-  const url = `${base}?${p.toString()}`;
+  const url = `https://aifort-takanao.github.io/?${params.toString()}`;
   fullUrl.value = url;
   qr.value = url;
 
-  const userName = nameInput.value || "there";
+  const username = nameI.value || "there";
   inviteText.value =
-`Hi, ${userName} !
+`Hi, ${username} !
 Get your invitation from here!
 *Do not reply to this account.
 ${url}`;
+
+  el("giftLinkGroup").style.display = giftI.value === "1" ? "block" : "none";
+  el("sorryGroup").style.display    = giftI.value === "0" ? "block" : "none";
 }
 
-function toggleGiftFields() {
-  giftLinkGroup.style.display = giftInput.value === "1" ? "block" : "none";
-  sorryGroup.style.display = giftInput.value === "0" ? "block" : "block";
-}
-
-function copyToClipboard(id) {
-  const el = document.getElementById(id);
-  el.select();
+/* === コピー & 保存 === */
+function copyText(id){
+  const t = el(id);
+  t.select();
   document.execCommand("copy");
   alert("コピーしました！");
 }
 
-function saveQR() {
+function saveQR(){
   const a = document.createElement("a");
   a.download = "qr-code.png";
-  a.href = qrCanvas.toDataURL("image/png");
+  a.href = el("qrCanvas").toDataURL("image/png");
   a.click();
 }
 
-window.addEventListener("DOMContentLoaded", () => {
-  issInput.value = new Date().toISOString().split("T")[0];
-  toggleGiftFields();
-  updateLink();
-});
-
-inputs.forEach(el => {
-  el.addEventListener("input", () => {
-    toggleGiftFields();
-    updateLink();
-  });
+/* === 初期化 === */
+window.addEventListener("DOMContentLoaded",()=>{
+  issI.value = new Date().toISOString().split("T")[0];
+  updateAll();
+  document.querySelectorAll("input,textarea,select")
+    .forEach(e => e.addEventListener("input", updateAll));
 });
 </script>
 </body>
 </html>
-
