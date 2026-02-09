@@ -15,34 +15,31 @@
     }
     .overlay {
       position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(255, 255, 255, 0.75);
+      inset: 0;
+      background: rgba(255,255,255,0.75);
       backdrop-filter: blur(2px);
-      z-index: 0;
     }
     .content {
       position: relative;
-      z-index: 1;
       max-width: 600px;
       margin: 3rem auto;
       padding: 2rem 1rem;
     }
-    h1 {
+    h1, h2 {
       text-align: center;
       color: #c97c5d;
-      margin-bottom: 2rem;
     }
     .card {
-      background: rgba(255, 255, 255, 0.9);
+      background: rgba(255,255,255,0.9);
       border-radius: 16px;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.1);
       padding: 2rem;
       margin-bottom: 2rem;
       border: 2px solid #e2c6b3;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.1);
     }
     label {
       font-weight: bold;
-      margin: 0.6rem 0 0.2rem;
+      margin-top: 0.6rem;
       display: block;
     }
     input, textarea, select {
@@ -52,19 +49,13 @@
       border-radius: 8px;
       border: 1px solid #ccc;
       font-size: 1rem;
-      box-sizing: border-box;
     }
     .output-section {
-      margin-top: 2rem;
       text-align: center;
-    }
-    .output-section input {
-      width: 90%;
-      margin: 0.5rem 0;
     }
     .copy-button, .save-button {
       background-color: #e3a57c;
-      color: white;
+      color: #fff;
       padding: 0.5rem 1rem;
       border: none;
       border-radius: 8px;
@@ -81,176 +72,152 @@
   </style>
 </head>
 <body>
-  <div class="overlay"></div>
-  <div class="content">
-    <h1>リンク作成ツール</h1>
-    <div class="card">
-      <label>名前</label>
-      <input type="text" id="name">
+<div class="overlay"></div>
 
-      <label>PINコード</label>
-      <input type="text" id="pin">
+<div class="content">
+<h1>リンク作成ツール</h1>
 
-      <label>Wi-Fi ID</label>
-      <input type="text" id="id">
+<div class="card">
+  <label>名前</label>
+  <input id="name" type="text">
 
-      <label>Wi-Fiパスワード</label>
-      <input type="text" id="pw">
+  <label>PINコード</label>
+  <input id="pin" type="text">
 
-      <label>有効期限</label>
-      <input type="date" id="exp">
+  <label>Wi-Fi ID</label>
+  <input id="id" type="text">
 
-      <label>発行日</label>
-      <input type="date" id="iss" readonly>
+  <label>Wi-Fiパスワード</label>
+  <input id="pw" type="text">
 
-      <label>メッセージ</label>
-      <textarea id="text" rows="2">ご確認ありがとうございます！</textarea>
+  <label>有効期限</label>
+  <input id="exp" type="date">
 
-      <label>ギフト</label>
-      <select id="gift">
-        <option value="1">あり</option>
-        <option value="0">なし</option>
-      </select>
+  <label>発行日</label>
+  <input id="iss" type="date" readonly>
 
-      <div id="giftLinkGroup">
-        <label>ギフトリンク</label>
-        <input type="text" id="link" />
+  <label>メッセージ</label>
+  <textarea id="text" rows="2">ご確認ありがとうございます！</textarea>
 
-        <label>ギフトの有効期限</label>
-        <input type="date" id="gexp" />
-      </div>
+  <label>ギフト</label>
+  <select id="gift">
+    <option value="1">あり</option>
+    <option value="0">なし</option>
+  </select>
 
-      <div id="sorryGroup">
-        <label>ギフト利用不可時のメッセージ</label>
-        <input type="text" id="sorry" value="このギフトは現在ご利用いただけません。" />
-      </div>
-
-      <label>表示言語</label>
-      <select id="lang">
-        <option value="jp">日本語</option>
-        <option value="en">English</option>
-      </select>
-    </div>
-
-    <div class="output-section">
-      <h2>生成されたリンク</h2>
-      <input type="text" id="fullUrl" readonly />
-      <button class="copy-button" onclick="copyToClipboard('fullUrl')">URLをコピー</button>
-
-      <h2>短縮URL（TinyURL）</h2>
-      <input type="text" id="shortUrl" readonly />
-      <button class="copy-button" onclick="copyToClipboard('shortUrl')">短縮URLをコピー</button>
-
-      <h2>QRコード</h2>
-      <canvas id="qrCanvas" width="200" height="200"></canvas><br>
-      <button class="save-button" onclick="saveQR()">QRコード画像を保存</button>
-
-      <h2>招待メッセージ</h2>
-<textarea id="inviteText" rows="5" readonly></textarea>
-<br>
-<button class="copy-button" onclick="copyToClipboard('inviteText')">
-  招待文をコピー
-</button>
-    </div>
+  <div id="giftLinkGroup">
+    <label>ギフトリンク</label>
+    <input id="link" type="text">
+    <label>ギフト有効期限</label>
+    <input id="gexp" type="date">
   </div>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
-  <script>
-    const inputs = document.querySelectorAll("input, textarea, select");
-    const fullUrl = document.getElementById("fullUrl");
-    const shortUrl = document.getElementById("shortUrl");
-    const qr = new QRious({
-      element: document.getElementById("qrCanvas"),
-      size: 200,
-      value: ""
-    });
+  <div id="sorryGroup">
+    <label>ギフト不可メッセージ</label>
+    <input id="sorry" type="text" value="このギフトは現在ご利用いただけません。">
+  </div>
 
-    function formatDate(input) {
-      if (!input) return "";
-      const date = new Date(input);
-      if (isNaN(date)) return "";
-      const weekdays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-      const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-      return `${weekdays[date.getUTCDay()]}, ${String(date.getUTCDate()).padStart(2, "0")} ${months[date.getUTCMonth()]}. ${date.getUTCFullYear()}`;
-    }
+  <label>表示言語</label>
+  <select id="lang">
+    <option value="jp">日本語</option>
+    <option value="en">English</option>
+  </select>
+</div>
 
-    function updateLink() {
-      const base = "https://aifort-takanao.github.io/";
-      const params = new URLSearchParams();
-      params.set("name", document.getElementById("name").value);
-      params.set("pin", document.getElementById("pin").value);
-      params.set("id", document.getElementById("id").value);
-      params.set("pw", document.getElementById("pw").value);
-      params.set("exp", formatDate(document.getElementById("exp").value));
-      params.set("iss", formatDate(document.getElementById("iss").value));
-      params.set("gexp", formatDate(document.getElementById("gexp").value));
-      params.set("gift", document.getElementById("gift").value);
-      params.set("text", document.getElementById("text").value);
-      params.set("link", document.getElementById("link").value);
-      params.set("sorry", document.getElementById("sorry").value);
-      params.set("lang", document.getElementById("lang").value);
+<div class="card output-section">
+  <h2>生成されたURL</h2>
+  <input id="fullUrl" readonly>
+  <button class="copy-button" onclick="copyToClipboard('fullUrl')">URLをコピー</button>
 
-      const url = `${base}?${params.toString()}`;
-      fullUrl.value = url;
-      const fullPageUrl = url;
-      qr.value = fullPageUrl;
+  <h2>QRコード</h2>
+  <canvas id="qrCanvas" width="200" height="200"></canvas><br>
+  <button class="save-button" onclick="saveQR()">QRを保存</button>
 
-      // 🔐 TinyURL APIキーを設定して使用
-      fetch("https://api.tinyurl.com/create", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": "Bearer Bwa0OWM2aQhJnMM9M1fNpKk8eJ00wnA1F03jYFwNhjOCBd1BViRp0NB6o61U"
-        },
-        body: JSON.stringify({
-          url: fullPageUrl,
-          domain: "tinyurl.com"
-        })
-      })
-      .then(res => res.json())
-      .then(data => {
-        shortUrl.value = data.data?.tiny_url || "取得失敗";
-      })
-      .catch(() => {
-        shortUrl.value = "エラー：取得できませんでした";
-      });
-    }
+  <!-- ★ 追加ここから -->
+  <h2>招待メッセージ</h2>
+  <textarea id="inviteText" rows="5" readonly></textarea>
+  <button class="copy-button" onclick="copyToClipboard('inviteText')">
+    招待文をコピー
+  </button>
+  <!-- ★ 追加ここまで -->
+</div>
+</div>
 
-    function copyToClipboard(id) {
-      const el = document.getElementById(id);
-      el.select();
-      document.execCommand("copy");
-      alert("コピーしました！");
-    }
+<script>
+const inputs = document.querySelectorAll("input, textarea, select");
+const fullUrl = document.getElementById("fullUrl");
+const inviteText = document.getElementById("inviteText");
 
-    function saveQR() {
-      const canvas = document.getElementById("qrCanvas");
-      const link = document.createElement("a");
-      link.download = "qr-code.png";
-      link.href = canvas.toDataURL("image/png");
-      link.click();
-    }
+const qr = new QRious({
+  element: document.getElementById("qrCanvas"),
+  size: 200,
+  value: ""
+});
 
-    function toggleGiftFields() {
-      const gift = document.getElementById("gift").value;
-      document.getElementById("giftLinkGroup").style.display = gift === "1" ? "block" : "none";
-      document.getElementById("sorryGroup").style.display = gift === "0" ? "block" : "none";
-    }
+function formatDate(input) {
+  if (!input) return "";
+  const d = new Date(input);
+  return d.toUTCString().split(" ").slice(0,4).join(" ");
+}
 
-    window.addEventListener("DOMContentLoaded", () => {
-      const today = new Date();
-      document.getElementById("iss").value = today.toISOString().split("T")[0];
-      toggleGiftFields();
-      updateLink();
-    });
+function updateLink() {
+  const base = "https://aifort-takanao.github.io/";
+  const p = new URLSearchParams();
 
-    inputs.forEach(input => {
-      input.addEventListener("input", () => {
-        toggleGiftFields();
-        updateLink();
-      });
-    });
-  </script>
+  p.set("name", name.value);
+  p.set("pin", pin.value);
+  p.set("id", id.value);
+  p.set("pw", pw.value);
+  p.set("exp", formatDate(exp.value));
+  p.set("iss", formatDate(iss.value));
+  p.set("gexp", formatDate(gexp.value));
+  p.set("gift", gift.value);
+  p.set("text", text.value);
+  p.set("link", link.value);
+  p.set("sorry", sorry.value);
+  p.set("lang", lang.value);
+
+  const url = `${base}?${p.toString()}`;
+  fullUrl.value = url;
+  qr.value = url;
+
+  const userName = name.value || "there";
+  inviteText.value =
+`Hi, ${userName} !
+Get your invitation from here!
+*Do not reply to this account.
+${url}`;
+}
+
+function toggleGiftFields() {
+  giftLinkGroup.style.display = gift.value === "1" ? "block" : "none";
+  sorryGroup.style.display = gift.value === "0" ? "block" : "none";
+}
+
+function copyToClipboard(id) {
+  const el = document.getElementById(id);
+  el.select();
+  document.execCommand("copy");
+  alert("コピーしました！");
+}
+
+function saveQR() {
+  const a = document.createElement("a");
+  a.download = "qr-code.png";
+  a.href = qrCanvas.toDataURL("image/png");
+  a.click();
+}
+
+window.addEventListener("DOMContentLoaded", () => {
+  iss.value = new Date().toISOString().split("T")[0];
+  toggleGiftFields();
+  updateLink();
+});
+
+inputs.forEach(i => i.addEventListener("input", () => {
+  toggleGiftFields();
+  updateLink();
+}));
+</script>
 </body>
 </html>
-
